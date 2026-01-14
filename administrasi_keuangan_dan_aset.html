@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Upload Foto Kegiatan P3A</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body {font-family:Arial, sans-serif; background:#f4f4f4; margin:0;}
+.container {max-width:500px; margin:20px auto; background:#fff; padding:20px;}
+h2 {text-align:center;}
+input, button {width:100%; padding:10px; margin-top:10px;}
+.preview img {width:100%; margin-top:10px;}
+.caption {font-size:13px; margin-top:5px;}
+</style>
+</head>
+<body>
+
+<div class="container">
+<h2>UPLOAD FOTO KEGIATAN</h2>
+
+<input type="file" id="foto" accept="image/*" capture="environment">
+<input type="text" id="caption" placeholder="Keterangan foto">
+
+<button onclick="uploadFoto()">Simpan & Download</button>
+
+<div class="preview" id="hasil"></div>
+</div>
+
+<script>
+function uploadFoto() {
+    const foto = document.getElementById('foto').files[0];
+    const caption = document.getElementById('caption').value;
+
+    if (!foto || !caption) {
+        alert('Foto dan keterangan wajib diisi');
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const now = new Date();
+        const tanggal = now.toISOString().slice(0,10);
+        const jam = now.toTimeString().slice(0,8).replace(/:/g,'-');
+        const namaFile =
+            tanggal + '_' +
+            jam + '_' +
+            caption.replace(/\s+/g,'-').toLowerCase() +
+            '.jpg';
+
+        document.getElementById('hasil').innerHTML =
+            '<img src=\"' + e.target.result + '\">' +
+            '<div class=\"caption\">' + caption +
+            '<br><small>' + tanggal + ' ' + jam.replace(/-/g,':') +
+            '</small></div>' +
+            '<a href=\"' + e.target.result +
+            '\" download=\"' + namaFile +
+            '\"><button>⬇️ Download Foto</button></a>';
+    };
+    reader.readAsDataURL(foto);
+}
+</script>
+
+</body>
+</html>
